@@ -1,12 +1,16 @@
 package com.example.investapp;
 
+import static android.view.View.INVISIBLE;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -28,10 +32,13 @@ public class telaprincipal extends AppCompatActivity {
         EditText edtTempo = findViewById(R.id.editTextText3);
         EditText edtTaxa = findViewById(R.id.editTextText4);
         Button btnCalcular = findViewById(R.id.btnCalcular);
-        EditText edtResultado = findViewById(R.id.edtResultado);
+        CardView cardResultado = findViewById(R.id.cardResultado);
+        TextView txtResultadoFinal = findViewById(R.id.txtResultadoFinal);
+        cardResultado.setVisibility(View.INVISIBLE);
         btnCalcular.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                cardResultado.setVisibility(View.VISIBLE);
                 String sValor = edtValorInicial.getText().toString();
                 String sAporte = edtAporte.getText().toString();
                 String sTaxa = edtTaxa.getText().toString();
@@ -39,10 +46,12 @@ public class telaprincipal extends AppCompatActivity {
 
                 // 1. Verificação de campos vazios
                 if (sValor.isEmpty() || sAporte.isEmpty() || sTaxa.isEmpty() || sTempo.isEmpty()) {
+                    txtResultadoFinal.setText("Erro: Preencha todos os campos para calcular.");
                     return;
                 }
 
                 try {
+
                     // 2. Usar SEMPRE as strings tratadas com replace
                     double valorInicial = Double.parseDouble(sValor.replace(",", "."));
                     double aporteMensal = Double.parseDouble(sAporte.replace(",", "."));
@@ -65,12 +74,13 @@ public class telaprincipal extends AppCompatActivity {
                     double apenasJuros = totalFinal - totalInvestido;
 
                     // 4. Exibição formatada
-                    edtResultado.setText(String.format("Total Investido: R$ %.2f\nJuros Ganhos: R$ %.2f\nTotal Geral: R$ %.2f",
+                    txtResultadoFinal.setText(String.format("Total Investido: R$ %.2f\nJuros Ganhos: R$ %.2f\nTotal Geral: R$ %.2f",
                             totalInvestido, apenasJuros, totalFinal));
 
                 } catch (Exception e) {
                     // Se ainda assim der erro (ex: o usuário digitou uma letra), o app não fecha
-                    edtResultado.setText("Erro nos dados digitados.");
+
+                    txtResultadoFinal.setText("Erro nos dados digitados.");
                 }
             }
         });
